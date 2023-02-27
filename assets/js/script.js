@@ -9,12 +9,12 @@ $(document).ready(function workScheduler () {
   // function? How can DOM traversal be used to get the "hour-x" id of the
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
+
   var saveBtn = $('.saveBtn');
   saveBtn.click(function () {
     var hourId = $(this).parent().attr('id');
-    var textData = $(this).siblings('.description').val();
-    JSON.parse(localStorage.getItem(hourId));
-    localStorage.setItem(JSON.stringify(hourId), JSON.stringify(textData));
+    var scheduleEntryData = $(this).siblings('.description').val();    
+    localStorage.setItem(hourId, scheduleEntryData);
   })
   
   // TODO: Add code to apply the past, present, or future class to each time
@@ -22,15 +22,46 @@ $(document).ready(function workScheduler () {
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
-  var hour = dayJs.format('H');
-    
-  
-  
 
+  var hourDay = Number(dayJs.format('H'));
+  $('div[id*="hour-"]').each(function applyClasses(index) {
+    console.log(this);
+    var id = $(this).attr('id');
+    var hour = Number(id.split('-').pop());
+    
+    if (hour < hourDay) {
+      $(this).removeClass('present future');
+      $(this).addClass('past');
+    }
+
+    if (hour === hourDay) {
+      $(this).removeClass('past future');
+      $(this).addClass('present');
+    }
+
+    if (hour > hourDay) {
+      $(this).removeClass('past present');
+      $(this).addClass('future');
+    }
+  });
+  
+  
+  
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   //
+
+  $('div[id*="hour-"]').each(function applyLocalStorage() {
+    var id = $(this).attr('id');
+    var scheduleText = localStorage.getItem(id);
+    if (scheduleText !== null) {
+      $(this).find('.description').val(scheduleText);
+    }
+    console.log(scheduleText);
+    console.log(id);
+  })
+
   // TODO: Add code to display the current date in the header of the page.
   var day = dayJs.format('dddd, MMMM D');
   $('#currentDay').text(day);
