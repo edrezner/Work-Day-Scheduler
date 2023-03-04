@@ -30,6 +30,7 @@ textarea {
   border-top: 1px dashed #000000;
 }
 
+/* the next three class selectors style the backgrounds based on the current time through JavaScript. */
 .past {
   background-color: #d3d3d3;
   color: white;
